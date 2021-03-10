@@ -35,22 +35,45 @@ namespace Airport.Api.Controllers
         public ActionResult Get(int id)
         {
             Airplane airplane = uow.Airplane.FindById(id);
-            if(airplane != null)
+            if (airplane != null)
             {
                 return Ok(airplane);
             }
             return NotFound();
         }
 
-        
+
         [HttpPost]
         [Authorize(Roles = Role.Admin)]
-        public void Post([FromBody] Airplane item)
+        public ActionResult Post([FromBody] Airplane item)
         {
 
             try
             {
                 uow.Airplane.Add(item);
+                uow.Commit();
+                //HttpContext.Response.StatusCode = (int)HttpStatusCode.Created;
+
+                Airplane airplane = uow.Airplane.FindByName(item.Name);
+
+                return Ok(airplane);
+            }
+            catch (Exception)
+            {
+                HttpContext.Response.StatusCode = 400;
+                return BadRequest(new { error = "Wrong data" });
+            }
+
+            
+        }
+
+        [HttpPut("{id}")]
+        [Authorize(Roles = Role.Admin)]
+        public void Put([FromBody] Airplane item)
+        {
+            try
+            {
+                uow.Airplane.Update(item, item.AirplaneId);
                 uow.Commit();
                 HttpContext.Response.StatusCode = (int)HttpStatusCode.Created;
             }
@@ -58,15 +81,11 @@ namespace Airport.Api.Controllers
             {
                 HttpContext.Response.StatusCode = 400;
             }
+
+            
         }
 
-        [HttpPut("{id}")]
-        [Authorize(Roles = Role.Admin)]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
 
-        
         [HttpDelete("{id}")]
         [Authorize(Roles = Role.Admin)]
         public void Delete(int id)

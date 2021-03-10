@@ -45,6 +45,20 @@ namespace Airport.Data.Implementation
             return destinations;
         }
 
- 
+        public void Update(Airplane airplane, int id)
+        {
+            Airplane updated = context.Airplanes.Find(id);
+
+            updated.Name = airplane.Name;
+            updated.Model = airplane.Model;
+            updated.Company = airplane.Company;
+
+            context.Airplanes.Update(updated);
+        }
+
+        public Airplane FindByName(string name)
+        {
+            return context.Airplanes.Single(a => a.Name == name);
+        }
     }
 }
