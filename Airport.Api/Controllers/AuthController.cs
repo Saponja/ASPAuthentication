@@ -27,12 +27,6 @@ namespace Airport.Api.Controllers
             this.authService = authService;
         }
 
-        [HttpGet("getusers")]
-        public List<User> Get()
-        {
-            return uow.User.GetAll();
-        }
-
         [AllowAnonymous]
         [HttpPost("login")]
         public ActionResult<AuthData> Login([FromBody] LoginModel model)
@@ -82,8 +76,6 @@ namespace Airport.Api.Controllers
                 Email = model.Email,
                 Password = authService.HashPassword(model.Password),
                 Role = model.Role
-                
-
             };
 
             uow.User.Add(user);
@@ -92,13 +84,6 @@ namespace Airport.Api.Controllers
             return Ok(user);
 
 
-        }
-
-        [HttpGet("get")]
-        [Authorize(Roles = Role.Admin)]
-        public List<Airplane> GetAirplanes()
-        {
-            return uow.Airplane.GetAll();
         }
 
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Airport.Data.UnitOfWork
 {
@@ -16,5 +17,7 @@ namespace Airport.Data.UnitOfWork
         public IRepositorySeat Seat { get; set; }
 
         void Commit();
+
+        Task CommitAsync();
     }
 }

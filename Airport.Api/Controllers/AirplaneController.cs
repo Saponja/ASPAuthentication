@@ -24,17 +24,19 @@ namespace Airport.Api.Controllers
             this.uow = uow;
         }
 
-        [HttpGet("getall")]
-        public List<Airplane> Get()
+        //[HttpGet("getall")]
+        [HttpGet]
+        public async Task<List<Airplane>> Get()
         {
-            return uow.Airplane.GetAll();
+            return await uow.Airplane.GetAllAsync();
         }
 
-        [HttpGet("get/{id}")]
+        //[HttpGet("get/{id}")]
+        [HttpGet("{id}")] 
         [Authorize(Roles = Role.Admin)]
-        public ActionResult Get(int id)
+        public async Task<ActionResult> Get(int id)
         {
-            Airplane airplane = uow.Airplane.FindById(id);
+            Airplane airplane = await uow.Airplane.FindByIdAsync(id);
             if (airplane != null)
             {
                 return Ok(airplane);
@@ -45,41 +47,61 @@ namespace Airport.Api.Controllers
 
         [HttpPost]
         [Authorize(Roles = Role.Admin)]
-        public ActionResult Post([FromBody] Airplane item)
+        public async Task<ActionResult> Post([FromBody] Airplane item)
         {
+
+            //try
+            //{
+            //    uow.Airplane.Add(item);
+            //    uow.Commit();
+            //    //HttpContext.Response.StatusCode = (int)HttpStatusCode.Created;
+
+            //    Airplane airplane = uow.Airplane.FindByName(item.Name);
+
+            //    return Ok(airplane);
+            //}
+            //catch (Exception)
+            //{
+            //    HttpContext.Response.StatusCode = 400;
+            //    return BadRequest(new { error = "Wrong data" });
+            //}
 
             try
             {
-                uow.Airplane.Add(item);
-                uow.Commit();
-                //HttpContext.Response.StatusCode = (int)HttpStatusCode.Created;
+                await uow.Airplane.AddAsync(item);
+                await uow.CommitAsync();
 
-                Airplane airplane = uow.Airplane.FindByName(item.Name);
+                Airplane airplane = await uow.Airplane.FindByNameAsync(item.Name);
 
                 return Ok(airplane);
+
+
             }
             catch (Exception)
-            {
-                HttpContext.Response.StatusCode = 400;
+            { 
                 return BadRequest(new { error = "Wrong data" });
             }
 
-            
+
         }
 
         [HttpPut("{id}")]
         [Authorize(Roles = Role.Admin)]
-        public void Put([FromBody] Airplane item)
+        public async Task<ActionResult> Put([FromBody] Airplane item)
         {
             try
             {
-                uow.Airplane.Update(item, item.AirplaneId);
-                uow.Commit();
-                HttpContext.Response.StatusCode = (int)HttpStatusCode.Created;
+                await uow.Airplane.UpdateAsync(item, item.AirplaneId);
+                await uow.CommitAsync();
+
+                Airplane airplane = await uow.Airplane.FindByIdAsync(item.AirplaneId);
+
+                return Ok(airplane);
+
             }
             catch (Exception)
             {
-                HttpContext.Response.StatusCode = 400;
+                return BadRequest(new { error = "Wrong data" });
             }
 
             
@@ -88,18 +110,30 @@ namespace Airport.Api.Controllers
 
         [HttpDelete("{id}")]
         [Authorize(Roles = Role.Admin)]
-        public void Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
+            //try
+            //{
+            //    Airplane airplane = uow.Airplane.FindById(id);
+            //    uow.Airplane.Remove(airplane);
+            //    uow.Commit();
+            //    HttpContext.Response.StatusCode = (int)HttpStatusCode.Created;
+            //}
+            //catch (Exception)
+            //{
+            //    HttpContext.Response.StatusCode = 400;
+            //}
+
             try
             {
-                Airplane airplane = uow.Airplane.FindById(id);
+                Airplane airplane = await uow.Airplane.FindByIdAsync(id);
                 uow.Airplane.Remove(airplane);
-                uow.Commit();
-                HttpContext.Response.StatusCode = (int)HttpStatusCode.Created;
+                await uow.CommitAsync();
+                return Ok("Airplane has been removed");
             }
             catch (Exception)
             {
-                HttpContext.Response.StatusCode = 400;
+                return BadRequest($"Airplane with id : ${id} does not exist");
             }
         }
 

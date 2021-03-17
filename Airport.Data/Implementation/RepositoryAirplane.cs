@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Airport.Data.Implementation
 {
@@ -18,7 +19,13 @@ namespace Airport.Data.Implementation
 
         public void Add(Airplane item)
         {
-            context.Airplanes.Add(item);
+           context.Airplanes.Add(item);
+        }
+
+        public async Task AddAsync(Airplane item)
+        {
+            //Trebalo bi da se koristi samo Add, odnosno ne bi trebalo da bude asinhrona metoda
+            await context.Airplanes.AddAsync(item);
         }
 
         public Airplane FindById(int id)
@@ -29,6 +36,7 @@ namespace Airport.Data.Implementation
         public List<Airplane> GetAll()
         {
             return context.Airplanes.Include(a => a.Seats).Include(a => a.Flights).ToList();
+            
         }
 
         public void Remove(Airplane item)
@@ -59,6 +67,33 @@ namespace Airport.Data.Implementation
         public Airplane FindByName(string name)
         {
             return context.Airplanes.Single(a => a.Name == name);
+        }
+
+        public async Task<Airplane> FindByNameAsync(string name)
+        {
+            Airplane airplane = await context.Airplanes.SingleAsync(a => a.Name == name);
+            return airplane;
+        }
+
+        public async Task<List<Airplane>> GetAllAsync()
+        {
+            return await context.Airplanes.Include(a => a.Seats).Include(a => a.Flights).ToListAsync();
+        }
+
+        public async Task<Airplane> FindByIdAsync(int id)
+        {
+            return await context.Airplanes.Include(a => a.Seats).Include(a => a.Flights).SingleAsync(a => a.AirplaneId == id);
+        }
+
+        public async Task UpdateAsync(Airplane airplane, int id)
+        {
+            Airplane update = await context.Airplanes.FindAsync(id);
+
+            update.Name = airplane.Name;
+            update.Company = airplane.Company;
+            update.Model = airplane.Model;
+
+            context.Airplanes.Update(update);
         }
     }
 }

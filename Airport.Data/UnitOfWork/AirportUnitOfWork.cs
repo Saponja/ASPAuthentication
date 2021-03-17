@@ -3,6 +3,7 @@ using Airport.Domain;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Airport.Data.UnitOfWork
 {
@@ -31,6 +32,11 @@ namespace Airport.Data.UnitOfWork
         public void Commit()
         {
             context.SaveChanges();
+        }
+
+        public async Task CommitAsync()
+        {
+            await context.SaveChangesAsync();
         }
 
         public void Dispose()
