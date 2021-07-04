@@ -24,7 +24,6 @@ namespace Airport.Data.Implementation
 
         public async Task AddAsync(Airplane item)
         {
-            //Trebalo bi da se koristi samo Add, odnosno ne bi trebalo da bude asinhrona metoda
             await context.Airplanes.AddAsync(item);
         }
 

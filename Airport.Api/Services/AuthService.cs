@@ -21,10 +21,8 @@ namespace Airport.Api.Services
         {
             this.jwtSecret = jwtSecret;
             this.jwtLifespan = jwtLifespan;
-            
+
         }
-
-
 
         public AuthData GetAuthData(string id, string role)
         {

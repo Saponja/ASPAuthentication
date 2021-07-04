@@ -32,7 +32,6 @@ namespace Airport.Api.Controllers
         public ActionResult<AuthData> Login([FromBody] LoginModel model)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
-
             User user = uow.User.FindByEmail(model.Email);
             
             if(user == null)
@@ -82,7 +81,6 @@ namespace Airport.Api.Controllers
             uow.Commit();
 
             return Ok(user);
-
 
         }
 

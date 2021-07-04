@@ -43,8 +43,11 @@ namespace Airport.Api
             
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+
                 .AddJwtBearer(options =>
                 {
+                    
+
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuer = false,
@@ -56,6 +59,7 @@ namespace Airport.Api
                             Encoding.UTF8.GetBytes(Configuration.GetValue<string>("JWTSecretKey"))
                         )
                     };
+
                 });
 
             
@@ -66,8 +70,9 @@ namespace Airport.Api
                     Configuration.GetValue<int>("JWTLifespan")
                 )
             );
-
+            
             services.AddScoped<IUnitOfWork, AirportUnitOfWork>();
+           
             services.AddDbContext<AirportContext>();
         }
 

@@ -29,12 +29,6 @@ namespace Airport.Domain
                 r.HasIndex(r => r.SeatId).IsUnique();
             });
 
-            //modelBuilder.Entity<User>().HasIndex(u => u.Email).IsUnique();
-            //modelBuilder.Entity<User>().HasIndex(u => u.Username).IsUnique();
-
-
-
-
             Seed(modelBuilder);
         }
 

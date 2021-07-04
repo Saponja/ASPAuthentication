@@ -26,13 +26,14 @@ namespace Airport.Api.Controllers
 
         //[HttpGet("getall")]
         [HttpGet]
+        [Authorize]
         public async Task<List<Airplane>> Get()
         {
             return await uow.Airplane.GetAllAsync();
         }
 
         //[HttpGet("get/{id}")]
-        [HttpGet("{id}")] 
+        [HttpGet("{id}")]
         [Authorize(Roles = Role.Admin)]
         public async Task<ActionResult> Get(int id)
         {
@@ -49,25 +50,10 @@ namespace Airport.Api.Controllers
         [Authorize(Roles = Role.Admin)]
         public async Task<ActionResult> Post([FromBody] Airplane item)
         {
-
-            //try
-            //{
-            //    uow.Airplane.Add(item);
-            //    uow.Commit();
-            //    //HttpContext.Response.StatusCode = (int)HttpStatusCode.Created;
-
-            //    Airplane airplane = uow.Airplane.FindByName(item.Name);
-
-            //    return Ok(airplane);
-            //}
-            //catch (Exception)
-            //{
-            //    HttpContext.Response.StatusCode = 400;
-            //    return BadRequest(new { error = "Wrong data" });
-            //}
-
             try
             {
+                
+
                 await uow.Airplane.AddAsync(item);
                 await uow.CommitAsync();
 
@@ -81,7 +67,6 @@ namespace Airport.Api.Controllers
             { 
                 return BadRequest(new { error = "Wrong data" });
             }
-
 
         }
 
@@ -112,17 +97,6 @@ namespace Airport.Api.Controllers
         [Authorize(Roles = Role.Admin)]
         public async Task<ActionResult> Delete(int id)
         {
-            //try
-            //{
-            //    Airplane airplane = uow.Airplane.FindById(id);
-            //    uow.Airplane.Remove(airplane);
-            //    uow.Commit();
-            //    HttpContext.Response.StatusCode = (int)HttpStatusCode.Created;
-            //}
-            //catch (Exception)
-            //{
-            //    HttpContext.Response.StatusCode = 400;
-            //}
 
             try
             {
@@ -133,7 +107,7 @@ namespace Airport.Api.Controllers
             }
             catch (Exception)
             {
-                return BadRequest($"Airplane with id : ${id} does not exist");
+                return BadRequest($"Airplane with id : ${id} does not exist or there is seats or flights binded to airplane whith this id");
             }
         }
 
