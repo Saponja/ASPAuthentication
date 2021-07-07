@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using Airport.Api.Services;
+using Microsoft.OpenApi.Models;
 
 namespace Airport.Api
 {
@@ -40,13 +41,13 @@ namespace Airport.Api
 
             });
 
-            
+
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
                 .AddJwtBearer(options =>
                 {
-                    
+
 
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
@@ -62,7 +63,17 @@ namespace Airport.Api
 
                 });
 
-            
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Version = "v1",
+                    Title = "JWT authorization",
+                    Description = "An example of authorization using Json Web Token",
+                });
+            });
+
+
 
             services.AddSingleton<IAuthService>(
                 new AuthService(
@@ -88,6 +99,14 @@ namespace Airport.Api
                .AllowAnyMethod()
                .AllowAnyHeader()
                );
+
+            app.UseSwagger();
+
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                c.RoutePrefix = string.Empty;
+            });
 
             app.UseHttpsRedirection();
 

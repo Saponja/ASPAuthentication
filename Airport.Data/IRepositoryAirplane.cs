@@ -16,5 +16,9 @@ namespace Airport.Data
         Task<List<Airplane>> GetAllAsync();
         Task<Airplane> FindByIdAsync(int id);
         Task UpdateAsync(Airplane airplane, int id);
+
+        Task<List<Airplane>> GetAirplanesPerPageAsync(int pageNum, int numOfRows);
+
+
     }
 }

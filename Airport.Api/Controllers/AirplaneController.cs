@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Airport.Api.Models;
 using Airport.Data.UnitOfWork;
 using Airport.Domain;
 using Microsoft.AspNetCore.Authorization;
@@ -116,5 +117,41 @@ namespace Airport.Api.Controllers
         {
             return uow.Airplane.GetDestinations(id);
         }
+
+        [HttpPost("page")]
+        [Authorize]
+
+        public async Task<IActionResult> GetRowsPerPage([FromBody] Pagintaion pagination)
+        {
+            List<Airplane> airplanes = new List<Airplane>();
+
+            if(pagination.NumOfRows <= 0)
+            {
+                return BadRequest("Number of rows cant be less than 0");
+            }
+            if(pagination.PageNum <= 0)
+            {
+                return BadRequest("Page number cant be less than 0");
+            }
+
+            airplanes = await uow.Airplane.GetAirplanesPerPageAsync(pagination.PageNum, pagination.NumOfRows);
+
+            return Ok(airplanes);
+
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 }

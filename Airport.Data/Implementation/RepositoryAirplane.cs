@@ -94,5 +94,11 @@ namespace Airport.Data.Implementation
 
             context.Airplanes.Update(update);
         }
+
+        public async Task<List<Airplane>> GetAirplanesPerPageAsync(int pageNum, int numOfRows)
+        {
+            int skip = (pageNum - 1) * numOfRows;
+            return await context.Airplanes.Skip(skip).Take(numOfRows).ToListAsync();
+        }
     }
 }
